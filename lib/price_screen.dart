@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'coin_data.dart';
@@ -11,6 +13,41 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String? selectedCurrency = 'USD';
+
+  String currencyPrices = currenciesHistoricalPrices;
+
+  List<Widget> currencyCardList() {
+    List<Widget> cardList = <Widget>[];
+
+    Map currencyPrices = jsonDecode(currenciesHistoricalPrices);
+
+    print('currencyPrices:  ' + currencyPrices.toString());
+
+    for (var currency in currencyPrices['rates']) {
+      cardList.add(
+        Card(
+          color: Colors.lightBlueAccent,
+          elevation: 5.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+            child: Text(
+              '1 ${currency['asset_id_quote']} = ? $selectedCurrency',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return cardList;
+  }
 
   DropdownButton<String> getDropdownButton() {
     return DropdownButton<String>(
@@ -68,28 +105,59 @@ class _PriceScreenState extends State<PriceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = ? USD',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
+          Flexible(
+            flex: 5,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+              child: ListView(
+//                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: currencyCardList(),
+                // Card(
+                //   color: Colors.lightBlueAccent,
+                //   elevation: 5.0,
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(10.0),
+                //   ),
+                //   child: Padding(
+                //     padding:
+                //         EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+                //     child: Text(
+                //       '1 BTC = ? USD',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //         fontSize: 20.0,
+                //         color: Colors.white,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // Card(
+                //   color: Colors.lightBlueAccent,
+                //   elevation: 5.0,
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(10.0),
+                //   ),
+                //   child: Padding(
+                //     padding:
+                //         EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+                //     child: Text(
+                //       '1 BTC = ? USD',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //         fontSize: 20.0,
+                //         color: Colors.white,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ),
             ),
           ),
           Container(
+            constraints: BoxConstraints(
+              minHeight: 150.0,
+            ),
             height: 150.0,
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
