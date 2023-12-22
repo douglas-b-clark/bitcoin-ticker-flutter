@@ -13,17 +13,18 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String? selectedCurrency = 'USD';
+  double selectedConversionRate = 1.0;
 
-  String currencyPrices = currenciesHistoricalPrices;
+  Map currencyPrices = jsonDecode(currenciesHistoricalPrices);
 
   List<Widget> currencyCardList() {
     List<Widget> cardList = <Widget>[];
 
-    Map currencyPrices = jsonDecode(currenciesHistoricalPrices);
-
     print('currencyPrices:  ' + currencyPrices.toString());
 
     for (var currency in currencyPrices['rates']) {
+      String assetIdQuote = currency['asset_id_quote'];
+      double rate = currency['rate'];
       cardList.add(
         Card(
           color: Colors.lightBlueAccent,
@@ -34,7 +35,7 @@ class _PriceScreenState extends State<PriceScreen> {
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
             child: Text(
-              '1 ${currency['asset_id_quote']} = ? $selectedCurrency',
+              '1 ${assetIdQuote} = ${(selectedConversionRate / rate).toStringAsFixed(2)} $selectedCurrency',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20.0,
@@ -71,16 +72,16 @@ class _PriceScreenState extends State<PriceScreen> {
       itemExtent: 40.0,
       onSelectedItemChanged: (int value) {
         setState(() {
-          selectedCurrency = currenciesList[value];
-          print(TargetPlatform);
+//          selectedCurrency = currenciesList[value];
+//          selectedConversionRate = double.parse(currenciesList[rate]);
+          selectedConversionRate = currencyPrices['rates'][value]['rate'];
+          selectedCurrency = currencyPrices['rates'][value]['asset_id_quote'];
         });
       },
-      children: List<Widget>.generate(
-        currenciesList.length,
-        (int index) {
-          return Text(currenciesList[index]);
-        },
-      ),
+      children:
+          List<Widget>.generate(currencyPrices['rates'].length, (int index) {
+        return Text(currencyPrices['rates'][index]['asset_id_quote']);
+      }),
     );
   }
 
@@ -168,4 +169,11 @@ class _PriceScreenState extends State<PriceScreen> {
       ),
     );
   }
+}
+
+Map jsonCurrenciesToMap(String prices) {
+  Map currencies = Map();
+  Map jsonCurrencies = jsonDecode(prices);
+
+  return currencies;
 }

@@ -136,6 +136,11 @@ const String currenciesHistoricalPrices = '''
 },
 {
 "time": "2023-12-02T08:58:18.0000000Z",
+"asset_id_quote": "USD",
+"rate": 1.0
+},
+{
+"time": "2023-12-02T08:58:18.0000000Z",
 "asset_id_quote": "ZAR",
 "rate": 18.885365478240058
 }
